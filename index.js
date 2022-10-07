@@ -135,16 +135,19 @@ function addRole() {
                     title: data.title,
                     salary: data.salary,
                     department_id: data.department_id,
-                }).then(() => console.log("added"))
-                main();
+                }).then(() => {
+                    console.log("added");
+                    main();
+                })
             });
         //   console.log(roleAdd)
     });
+
 }
 function addEmployee() {
     connection.query("SELECT * FROM employees", (err, res) => {
         if (err) throw (err)
-        console.log(res);
+        // console.log(res);
         let empAdd = inquirer
             .prompt([
                 {
@@ -176,12 +179,15 @@ function addEmployee() {
                 // const chosenDept = res.find((department_id) => department_id.name === data.departments);
                 console.log(data);
                 connection.promise().query("INSERT INTO employees SET ?", {
-                    Emp_first_name: data.Emp_first_name,
-                    Emp_last_name: data.Emp_last_name,
-                    Emp_role: data.Emp_role,
-                    Emp_manager: data.Emp_manager,
-                }).then(() => console.log("added"))
-                main();
+                    first_name: data.Emp_first_name,
+                    last_name: data.Emp_last_name,
+                    role_id: data.Emp_role,
+                    manager_id: data.Emp_manager,
+                }).then(() => {
+                    console.log("added")
+
+                    main();
+                }).catch(err => console.log(err))
             });
         //   console.log(roleAdd)
     });
