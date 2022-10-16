@@ -53,6 +53,8 @@ async function main() {
                 addRole();
             } else if (response.prompt === "Add an employee") {
                 addEmployee();
+            } else if ( response.prompt === "Update an employee role") {
+                updateEmpRole();
             }
         });
 
@@ -191,6 +193,48 @@ function addEmployee() {
             });
         //   console.log(roleAdd)
     });
+}
+
+function updateEmpRole() {
+    let allEmployees = connection.promise().query("select * from employees")
+    let allRoles = connection.promise().query("select * from roles")
+    allEmployees.then((employee)=>{
+        let employee_list = employee[0].map((employees) => ({
+            name: employees.first_name,
+            value: employees.id,
+        }))
+        // console.log(employee_list)
+        allRoles.then((role)=>{
+            let roles = role[0].map((role) => ({
+                name: role.title,
+                value: role.id,
+            }))
+            console.log(roles)
+            inquirer.prompt([
+                {
+                    type: "list",
+                    name: "employee",
+                    message: "Select the employee to update?",
+                    choices: employee_list
+                },
+                {
+                    type: "list",
+                    name: "role",
+                    message: "Select the role to assign?",
+                    choices: roles
+                },
+                
+            ]).then((data)=>{
+                connection.promise().query(`update employees set role_id = ${data.role} where id = ${data.employee}`).then((data,error)=>{
+                    if (error) console.log(error)
+                    console.log("role updated successfully")
+                    console.log(data)
+                    main()
+                })
+            })
+        })
+
+    })
 }
 
 // function addEmployee() {
